@@ -1,4 +1,4 @@
-import os, shutil
+import io
 import base64
 from flask import Flask, request, redirect, url_for, send_from_directory, render_template
 from werkzeug.utils import secure_filename
@@ -50,20 +50,19 @@ def index():
         if img_file and check_file(img_file.filename):
             # サニタイズ処理
             filename = secure_filename(img_file.filename)
+            fileformat = filename.split(".")[1]
+
             img_base64 = base64.b64encode(img_file.read())
+            img_base64_str = "data:image/{};base64,".format(fileformat) + str(img_base64).split("'")[1]
 
-            # uploads内削除
-            #shutil.rmtree("uploads")
-            #os.mkdir("uploads")
-
-            # ファイルの保存
-            #img_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            #img_url = '/uploads/' + filename
+            #img_bytes.seek(0)
+            data = str(img_base64).split("'")[1]
 
             # LEDに画像表示
-            show_uploadimage(led, "uploads/" + filename)
+            show_uploadimage(led, io.BytesIO(base64.b64decode(data)))
 
-            return render_template('index.html', img_url=img_url)
+            
+            return render_template('index.html', img_base=img_base64_str)
 
         else:
             return redirect(request.url)
