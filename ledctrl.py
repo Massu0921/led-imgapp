@@ -10,6 +10,8 @@ class LEDCtrl(Base):
         self.ledloop = False
 
     def loadimg(self, imgpath):
+        '''画像読み込み
+        '''
         img = Image.open(imgpath).convert("RGB")
 
         # LEDサイズに画像をリサイズ(固定比)
@@ -20,6 +22,10 @@ class LEDCtrl(Base):
         return img
 
     def setup(self):
+        '''LEDの初期設定
+
+        インスタンス生成後に呼び出すこと
+        '''
         super().setup()
         self.canvas = self.matrix.CreateFrameCanvas()
 
